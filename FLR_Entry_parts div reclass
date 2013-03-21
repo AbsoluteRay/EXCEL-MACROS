@@ -1,0 +1,86 @@
+Sub FLR_Entry()
+
+Application.ScreenUpdating = False
+
+Dim session, Window_1 As String
+Dim x As Integer
+Dim z As String
+Dim env As String
+
+Set Txt = CreateObject("PCOMM.autECLPS")
+Set Clist = CreateObject("PCOMM.autECLConnlist")
+Set Oia = CreateObject("PCOMM.autECLOIA")
+Clist.Refresh
+session = "A"
+Txt.setconnectionbyname session
+Oia.setconnectionbyname session
+
+Window_1 = Txt.gettext(2, 33, 17)
+
+If Window_1 <> "PMT Create Manual" Then
+   
+    MsgBox "您还没有初始化窗口!请初始化到PMT Create Manual屏幕状态后执行程序!"
+
+Exit Sub
+
+Else
+
+For x = 1 To Selection.Cells.Count   '从1到选择的数量
+
+    Txt.SendKeys Selection(x).Offset(0, 1), 6, 12   'div 开始输入原div和原pc
+    Txt.SendKeys Selection(x).Offset(0, 7), 6, 25 'major
+    Txt.SendKeys Selection(x).Offset(0, 8), 6, 39 'minor
+    Txt.SendKeys Selection(x).Offset(0, 9), 6, 54 'proj
+    Txt.SendKeys Selection(x).Offset(0, 10), 6, 74 'subminor
+    Txt.SendKeys "0" & Selection(x).Offset(0, 2), 8, 8 'pc
+    Txt.SendKeys Format(Selection(x).Offset(0, 5) * -1, "###0.00;###0.00-"), 10, 11  '原金额相反数
+    Txt.SendKeys Format(Selection(x).Offset(0, 6) * -1, "###0.0;###0.0-"), 10, 43 '原数量相反数
+    Txt.SendKeys Selection(x).Offset(0, 0), 12, 16 'part#
+    Txt.SendKeys Selection(x).Offset(0, 11), 14, 17
+    Txt.SendKeys Selection(x).Offset(0, 12), 14, 45
+    Txt.SendKeys Selection(x).Offset(0, 13), 16, 17
+    Txt.SendKeys Selection(x).Offset(0, 14), 16, 40
+    Txt.SendKeys Selection(x).Offset(0, 15), 18, 17
+            
+    Txt.SendKeys "[PF9]"   '确认&保存
+    
+    Oia.WaitForAppAvailable
+    Oia.waitforinputready
+    
+    Txt.SendKeys "[PF9]"   '新建一个
+    
+    Oia.WaitForAppAvailable
+    Oia.waitforinputready
+    
+    Txt.SendKeys Selection(x).Offset(0, 3), 6, 12 'div 开始输入新div和新pc
+    Txt.SendKeys Selection(x).Offset(0, 7), 6, 25 'major
+    Txt.SendKeys Selection(x).Offset(0, 8), 6, 39 'minor
+    Txt.SendKeys Selection(x).Offset(0, 9), 6, 54 'proj
+    Txt.SendKeys Selection(x).Offset(0, 10), 6, 74 'subminor
+    Txt.SendKeys "0" & Selection(x).Offset(0, 4), 8, 8 'pc
+    Txt.SendKeys Format(Selection(x).Offset(0, 5), "###0.00;###0.00-"), 10, 11
+    Txt.SendKeys Format(Selection(x).Offset(0, 6), "###0.0;###0.0-"), 10, 43
+    Txt.SendKeys Selection(x).Offset(0, 0), 12, 16 'part#
+    Txt.SendKeys Selection(x).Offset(0, 11), 14, 17
+    Txt.SendKeys Selection(x).Offset(0, 12), 14, 45
+    Txt.SendKeys Selection(x).Offset(0, 13), 16, 17
+    Txt.SendKeys Selection(x).Offset(0, 14), 16, 40
+    Txt.SendKeys Selection(x).Offset(0, 15), 18, 17
+    
+    Txt.SendKeys "[PF9]"   '确认&保存
+    
+    Oia.WaitForAppAvailable
+    Oia.waitforinputready
+    
+    Txt.SendKeys "[PF9]"   '新建一个
+    
+    Oia.WaitForAppAvailable
+    Oia.waitforinputready
+
+Next x
+
+End If
+
+Application.ScreenUpdating = True
+
+End Sub
