@@ -1,0 +1,49 @@
+Sub 判断age()
+Dim a, b As Integer
+Dim rng As Range
+
+
+
+With Sheets("Sheet1").Range("H:H")
+  Set rng = .Find(What:=ActiveCell.Offset(0, -2).Value, _
+                            After:=.Cells(.Cells.Count), _
+                            LookIn:=xlValues, _
+                            LookAt:=xlWhole, _
+                            SearchOrder:=xlByRows, _
+                            SearchDirection:=xlNext, _
+                            MatchCase:=False).Offset(0, 2)
+End With
+
+a = 0
+1:
+b = WorksheetFunction.Sum(Range(rng, rng.Offset(a, 0)))
+
+
+If ActiveCell.Offset(0, -1).Value <= b Then
+ 
+ ActiveCell.FormulaR1C1 = rng.Offset(a, -1)
+ ActiveCell.Offset(0, 1) = b
+ 
+Else
+ 
+a = a + 1
+
+GoTo 1
+
+End If
+  
+End Sub
+
+Sub 重复判断age()
+
+2:
+判断age
+
+ActiveCell.Offset(1, 0).Range("A1").Select
+
+If ActiveCell.Offset(0, -1) = "" Then
+Exit Sub
+Else
+GoTo 2
+End If
+End Sub
