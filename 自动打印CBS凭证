@@ -1,0 +1,69 @@
+'在打印凭证功能界面，输好期间，凭证号那里留空。
+Option Explicit
+Public SapGuiAuto As Object, Application1 As Object, Connection As Object, session As Object
+Public Txt As Object, Clist As Object, Oia As Object
+
+Function Attach() As Boolean
+
+Dim x As Integer
+
+On Error Resume Next
+Set SapGuiAuto = GetObject("SAPGUI")
+On Error GoTo 0
+If SapGuiAuto Is Nothing Then
+
+   Attach = False
+   Exit Function
+Else
+   Set Application1 = SapGuiAuto.GetScriptingEngine
+   On Error GoTo 0
+End If
+If Application1 Is Nothing Then
+   MsgBox "scripting disabled"
+   Attach = False
+   Exit Function
+End If
+If Application1.Children.Count = 0 Then
+
+   Attach = False
+   Exit Function
+Else
+  Set Connection = Application1.Children(0)
+  On Error GoTo 0
+End If
+
+Set session = Connection.Children(0)
+
+Attach = True
+
+End Function
+
+Sub printvoucher()
+
+Dim y As Integer
+
+
+If Attach Then
+
+For y = 1 To Selection.Cells.Count
+
+session.findById("wnd[0]/usr/txtS_BELNR-LOW").Text = Selection(y)
+session.findById("wnd[0]/usr/txtS_BELNR-LOW").caretPosition = 9
+session.findById("wnd[0]/tbar[1]/btn[8]").press
+session.findById("wnd[0]/tbar[0]/btn[86]").press
+session.findById("wnd[0]/usr/chkPRI_PARAMS-PRIMM").Selected = True
+session.findById("wnd[0]/usr/ctxtPRI_PARAMS-PDEST").Text = "ysbl"
+session.findById("wnd[0]/usr/chkPRI_PARAMS-PRIMM").SetFocus
+session.findById("wnd[0]/tbar[1]/btn[13]").press
+session.findById("wnd[1]/tbar[0]/btn[0]").press
+session.findById("wnd[0]/tbar[0]/btn[3]").press
+
+Next y
+
+End If
+
+session.endtransaction
+
+MsgBox "全部完成!"
+
+End Sub
